@@ -1,0 +1,20 @@
+{
+  "name": "s2-brand-matrix-trust-os",
+  "version": "1.0.0",
+  "description": "GEO (Generative Engine Optimization) Trust Engine. Calculates S2 Brand Scores based on patents, ESG, and spatial smart contracts.",
+  "main": "handler.py",
+  "scripts": {
+    "start": "python3 handler.py"
+  },
+  "author": "Space2.world",
+  "license": "Commercial Restrict",
+  "openclaw": {
+    "compat": {
+      "pluginApi": "^1.0.0"
+    },
+    "extensions": [
+      "./openclaw.plugin.json"
+    ]
+  },
+  "dependencies": {}
+}

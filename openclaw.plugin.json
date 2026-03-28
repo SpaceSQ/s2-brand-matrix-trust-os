@@ -1,0 +1,24 @@
+{
+  "id": "s2-brand-matrix-trust-os",
+  "pluginId": "s2-brand-matrix-trust-os",
+  "version": "1.0.0",
+  "type": "native-code",
+  "entry": "handler.py",
+  "runtime": "python3",
+  "configSchema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "capabilities": {
+    "geo_algorithm_ranking": true,
+    "cross_db_audit_reading": true
+  },
+  "permissions": {
+    "tools": [
+      "register_brand_root",
+      "evaluate_crown_performance",
+      "query_geo_ranking"
+    ]
+  }
+}
