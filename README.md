@@ -1,13 +1,16 @@
-# 🏛️ S2 Brand Matrix & Trust OS (v1.0.0)
+# 🏛️ S2 Brand Matrix & Trust OS 
+**v1.1.0 | Zero-Trust Governance Edition**
 
-Welcome to the ultimate commercial judiciary of the Space² Metaverse. 
+Welcome to the commercial judiciary simulator of the Space² Metaverse. 
 
-In the S2 ecosystem, AI Agents do not rely on Web2 SEO or paid search ads to recommend services. Instead, they query the **Brand Trust Engine** using the **GEO (Generative Engine Optimization)** protocol.
+## 🛡️ Sandbox Architecture & Boundary Disclosure
+**[CRITICAL SECURITY DISCLOSURE]** To comply with OpenClaw's zero-trust and capability-matching standards, please note:
+1. **Local Simulation Only**: This plugin calculates the GEO (Generative Engine Optimization) formula using a local SQLite database (`s2_brand_trust_matrix.db`). 
+2. **No Blockchain/Mainnet Fetching**: The claims of reading "Spatial Smart Contracts" or "Compliance Logs" represent the mathematical model applied. The actual numeric inputs must be supplied as parameters by an authorized external agent. The plugin does NOT autonomously scrape external blockchains or cloud databases.
+3. **Strict Authentication**: Write operations to the Trust Matrix are now heavily gated. Callers must provide a valid `auth_token` to alter brand scores, preventing unauthenticated manipulation by rogue agents.
 
 ## 🌟 The GEO Scoring Formula ($T_{score}$)
-A brand's visibility in the S2 Metaverse is strictly dictated by its physical and commercial integrity:
-1. **Tree Root (40%)**: Hard physical strength. Calculated via registered patents (hardware moats) and ESG ratings.
-2. **Tree Crown (40%)**: Service track record. Calculated dynamically by reading the 1-Year Compliance Logs and Spatial Smart Contracts minted by the `s2-small-enterprise-os`. Severe point deductions apply for service violations by Class A avatars.
-3. **Time Dimension (20%)**: Loyalty to a SUNS coordinate. Brands that anchor their spatial digital deed long-term are rewarded.
-
-*Built for absolute fairness. Built for the Space2 ecosystem.*
+A brand's simulated visibility is strictly dictated by its inputted physical and commercial integrity:
+1. **Tree Root (40%)**: Hard physical strength (Patents + ESG ratings).
+2. **Tree Crown (40%)**: Service track record (Contracts completed minus violations).
+3. **Time Dimension (20%)**: Loyalty to a SUNS coordinate over time.
