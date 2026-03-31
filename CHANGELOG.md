@@ -1,6 +1,6 @@
 # 变更日志 (Changelog) - S2 Brand Matrix & Trust OS
 
-## [1.3.0] - 2026-04-01
+## [1.3.0] - 2026-03-31
 ### 🔒 Security Patch (Silent Auth & Metadata Sync)
 - **Resolved Metadata Inconsistency**: Explicitly declared the `S2_GEO_ADMIN_TOKEN` in `openclaw.plugin.json` under `configSchema` so the host platform is aware of the required environment variable.
 - **Eliminated User-Exposure Risk**: Completely removed the `auth_token` parameter from all write tools. The Python handler now reads the token directly and silently from the host OS environment.
