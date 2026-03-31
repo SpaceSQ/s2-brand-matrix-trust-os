@@ -3,6 +3,8 @@ import json
 import sqlite3
 import time
 import os
+import hmac
+import hashlib
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_FILE = os.path.join(BASE_DIR, "s2_brand_trust_matrix.db")
@@ -33,16 +35,32 @@ class BrandTrustEngine:
         time_score = min(100.0, time_alive_days / 10.95) 
         return (root * 0.4) + (crown * 0.4) + (time_score * 0.2)
 
-    def _verify_host_env_auth(self):
-        """[终极合规] 仅读取宿主机环境变量，绝对禁止通过传参获取密码"""
-        host_token = os.environ.get("S2_GEO_ADMIN_TOKEN")
-        if not host_token:
-            return False, "[Error] 权限拒绝 (Access Denied): 宿主机未配置 'S2_GEO_ADMIN_TOKEN' 环境变量。写入已被底层沙盒拦截。"
+    def _verify_hmac_signature(self, params):
+        """[密码学合规] 验证 HMAC-SHA256 签名，确保请求不可篡改且来源合法"""
+        secret = os.environ.get("S2_GEO_ADMIN_TOKEN")
+        if not secret or len(secret) < 16:
+            return False, "[Error] 系统级熔断: 宿主机 'S2_GEO_ADMIN_TOKEN' 缺失或密码强度不足(需>=16字符)。"
+
+        signature = params.get("signature", "")
+        if not signature:
+            return False, "[Error] 权限拒绝: 缺失 HMAC-SHA256 签名 (signature 字段)。禁止写入。"
+
+        # 构建验签 payload (排除 signature 字段本身)
+        payload = {k: v for k, v in params.items() if k != "signature"}
+        payload_str = json.dumps(payload, sort_keys=True)
+        
+        # 计算期望的签名
+        expected_sig = hmac.new(secret.encode('utf-8'), payload_str.encode('utf-8'), hashlib.sha256).hexdigest()
+        
+        # 安全的常量时间比较 (防时序攻击)
+        if not hmac.compare_digest(expected_sig, signature):
+            return False, "[Error] 签名校验失败 (Invalid Signature): 数据篡改或密钥不匹配。"
+            
         return True, "Success"
 
     def register_brand_root(self, params):
-        """[高危操作] 登记树根：隐式鉴权，不再接收 auth_token 参数"""
-        is_valid, msg = self._verify_host_env_auth()
+        """[高危操作] 登记树根：执行严格的 HMAC-SHA256 签名校验"""
+        is_valid, msg = self._verify_hmac_signature(params)
         if not is_valid:
             return msg
 
@@ -74,8 +92,8 @@ class BrandTrustEngine:
         return msg
 
     def evaluate_crown_performance(self, params):
-        """[高危操作] 评估树冠：隐式鉴权"""
-        is_valid, msg = self._verify_host_env_auth()
+        """[高危操作] 评估树冠：执行严格的 HMAC-SHA256 签名校验"""
+        is_valid, msg = self._verify_hmac_signature(params)
         if not is_valid:
             return msg
 
@@ -108,7 +126,7 @@ class BrandTrustEngine:
         return f"[Crown Evaluated] 品牌 {did} 本地评分更新。Crown Score: {crown_score:.2f} | T_score: {total_score:.2f}"
 
     def query_geo_ranking(self, params):
-        """[公开操作] GEO 降维检索"""
+        """[公开操作] GEO 降维检索 (无需鉴权)"""
         category = params.get("industry_category", "")
         
         conn = sqlite3.connect(DB_FILE)

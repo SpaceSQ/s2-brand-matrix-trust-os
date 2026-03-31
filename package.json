@@ -1,7 +1,7 @@
 {
   "name": "s2-brand-matrix-trust-os",
-  "version": "1.3.0",
-  "description": "Local simulator for GEO (Generative Engine Optimization). Utilizes silent environment-vault secrets for local SQLite writes, eliminating chat-based token exposure.",
+  "version": "1.4.0",
+  "description": "S2 商业世界树引擎。采用 HMAC-SHA256 密码学签名与宿主机环境变量进行零信任校验的本地 GEO 模拟器。",
   "main": "handler.py",
   "scripts": {
     "start": "python3 handler.py"
@@ -17,12 +17,23 @@
     },
     "extensions": [
       "./openclaw.plugin.json"
-    ]
+    ],
+    "configSchema": {
+      "type": "object",
+      "properties": {
+        "S2_GEO_ADMIN_TOKEN": {
+          "type": "string",
+          "description": "Host-level Secret Key used for HMAC-SHA256 cryptographic signatures. Must be >= 16 chars."
+        }
+      },
+      "required": ["S2_GEO_ADMIN_TOKEN"]
+    }
   },
   "keywords": [
     "trust-engine",
     "brand-matrix",
     "zero-trust",
+    "hmac-sha256",
     "openclaw-plugin"
   ],
   "dependencies": {}

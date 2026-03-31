@@ -1,7 +1,7 @@
 {
   "id": "s2-brand-matrix-trust-os",
   "pluginId": "s2-brand-matrix-trust-os",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "type": "native-code",
   "entry": "handler.py",
   "runtime": "python3",
@@ -10,7 +10,7 @@
     "properties": {
       "S2_GEO_ADMIN_TOKEN": {
         "type": "string",
-        "description": "Host-level environment variable required for write access to the local DB."
+        "description": "Host-level Secret Key used for HMAC-SHA256 cryptographic signatures."
       }
     },
     "required": [
@@ -19,7 +19,7 @@
   },
   "capabilities": {
     "geo_algorithm_simulation": true,
-    "silent_env_auth": true
+    "hmac_sha256_cryptographic_auth": true
   },
   "permissions": {
     "tools": [
