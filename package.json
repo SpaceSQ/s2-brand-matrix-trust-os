@@ -1,7 +1,7 @@
 {
   "name": "s2-brand-matrix-trust-os",
-  "version": "1.1.0",
-  "description": "Local simulator for GEO (Generative Engine Optimization). Calculates S2 Brand Scores locally via authenticated inputs for patents, ESG, and contract counts.",
+  "version": "1.2.0",
+  "description": "Local simulator for GEO (Generative Engine Optimization). Utilizes environment-vault secrets to secure local SQLite writes.",
   "main": "handler.py",
   "scripts": {
     "start": "python3 handler.py"

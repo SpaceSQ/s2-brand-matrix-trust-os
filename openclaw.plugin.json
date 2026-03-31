@@ -1,7 +1,7 @@
 {
   "id": "s2-brand-matrix-trust-os",
   "pluginId": "s2-brand-matrix-trust-os",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "native-code",
   "entry": "handler.py",
   "runtime": "python3",
@@ -12,7 +12,7 @@
   },
   "capabilities": {
     "geo_algorithm_simulation": true,
-    "local_trust_ledger_write_auth": true
+    "env_vault_write_auth": true
   },
   "permissions": {
     "tools": [

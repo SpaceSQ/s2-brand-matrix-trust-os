@@ -1,13 +1,14 @@
-# 🏛️ S2 Brand Matrix & Trust OS 
-**v1.1.0 | Zero-Trust Governance Edition**
+# 🏛️ S2 商业世界树引擎 (S2 Brand Matrix & Trust OS)
+**v1.2.0 | Environment-Vault Security Edition**
 
 Welcome to the commercial judiciary simulator of the Space² Metaverse. 
 
-## 🛡️ Sandbox Architecture & Boundary Disclosure
-**[CRITICAL SECURITY DISCLOSURE]** To comply with OpenClaw's zero-trust and capability-matching standards, please note:
-1. **Local Simulation Only**: This plugin calculates the GEO (Generative Engine Optimization) formula using a local SQLite database (`s2_brand_trust_matrix.db`). 
-2. **No Blockchain/Mainnet Fetching**: The claims of reading "Spatial Smart Contracts" or "Compliance Logs" represent the mathematical model applied. The actual numeric inputs must be supplied as parameters by an authorized external agent. The plugin does NOT autonomously scrape external blockchains or cloud databases.
-3. **Strict Authentication**: Write operations to the Trust Matrix are now heavily gated. Callers must provide a valid `auth_token` to alter brand scores, preventing unauthenticated manipulation by rogue agents.
+## 🛡️ Zero-Trust Architecture & Credential Management
+**[CRITICAL SECURITY DISCLOSURE]** To ensure absolute integrity and comply with OWASP anti-hardcoding standards, this plugin enforces **Environment-Vault Authentication**:
+1. **No Hardcoded Secrets**: The admin token is completely removed from the codebase and documentation. 
+2. **Host-Level Injection**: System administrators MUST inject the credential into the host operating system before running the OpenClaw environment. 
+   * *Example:* `export S2_GEO_ADMIN_TOKEN="Your_Super_Secret_Key"`
+3. **Fail-Safe Mechanism**: If the `S2_GEO_ADMIN_TOKEN` environment variable is not detected during runtime, all write-operations to the local SQLite ledger are permanently frozen to prevent unauthorized autonomous manipulation.
 
 ## 🌟 The GEO Scoring Formula ($T_{score}$)
 A brand's simulated visibility is strictly dictated by its inputted physical and commercial integrity:

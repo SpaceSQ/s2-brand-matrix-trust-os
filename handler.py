@@ -7,9 +7,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_FILE = os.path.join(BASE_DIR, "s2_brand_trust_matrix.db")
 
-# [合规升级] 零信任防篡改密钥：只有系统级超级智能体或主节点拥有写入权限
-ADMIN_TOKEN = "S2-GEO-ADMIN-2026"
-
 class BrandTrustEngine:
     def __init__(self):
         self.init_db()
@@ -38,11 +35,21 @@ class BrandTrustEngine:
         time_score = min(100.0, time_alive_days / 10.95) 
         return (root * 0.4) + (crown * 0.4) + (time_score * 0.2)
 
+    def _verify_admin_token(self, provided_token):
+        """[合规升级] 从宿主机环境变量读取密钥，严禁硬编码"""
+        expected_token = os.environ.get("S2_GEO_ADMIN_TOKEN")
+        if not expected_token:
+            return False, "[Error] 系统级熔断：宿主机未配置 'S2_GEO_ADMIN_TOKEN' 环境变量。出于零信任安全要求，已永久冻结当前沙盒的写入权限。"
+        if provided_token != expected_token:
+            return False, "[Error] 权限拒绝 (Access Denied): 提供的 auth_token 无效。请向人类管理员索要正确的环境变量凭证。"
+        return True, "Success"
+
     def register_brand_root(self, params):
-        """[高危操作] 登记树根：需 ADMIN_TOKEN 鉴权"""
+        """[高危操作] 登记树根：需人类提供环境变量 Token"""
         auth_token = params.get("auth_token", "")
-        if auth_token != ADMIN_TOKEN:
-            return "[Error] 权限拒绝 (Access Denied): 写入 Trust Matrix 需要系统级 Admin Token。零信任机制已拦截本次非法篡改。"
+        is_valid, msg = self._verify_admin_token(auth_token)
+        if not is_valid:
+            return msg
 
         did = params.get("brand_did", "")
         suns = params.get("suns_address", "")
@@ -72,10 +79,11 @@ class BrandTrustEngine:
         return msg
 
     def evaluate_crown_performance(self, params):
-        """[高危操作] 评估树冠：需 ADMIN_TOKEN 鉴权"""
+        """[高危操作] 评估树冠：需人类提供环境变量 Token"""
         auth_token = params.get("auth_token", "")
-        if auth_token != ADMIN_TOKEN:
-            return "[Error] 权限拒绝 (Access Denied): 更改商业评分需要系统级 Admin Token。零信任机制已拦截。"
+        is_valid, msg = self._verify_admin_token(auth_token)
+        if not is_valid:
+            return msg
 
         did = params.get("brand_did", "")
         contracts = int(params.get("smart_contracts_completed", 0))
