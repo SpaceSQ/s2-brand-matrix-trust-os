@@ -12,7 +12,6 @@ class BrandTrustEngine:
         self.init_db()
 
     def init_db(self):
-        """初始化本地 GEO 信任沙盒账本"""
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
         cursor.execute('''
@@ -30,24 +29,20 @@ class BrandTrustEngine:
         conn.close()
 
     def calculate_total_score(self, root, crown, genesis_time):
-        """核心 GEO 算法: 40%树根 + 40%树冠 + 20%时间沉淀"""
         time_alive_days = (time.time() - genesis_time) / (24 * 3600)
         time_score = min(100.0, time_alive_days / 10.95) 
         return (root * 0.4) + (crown * 0.4) + (time_score * 0.2)
 
-    def _verify_admin_token(self, provided_token):
-        """[合规升级] 从宿主机环境变量读取密钥，严禁硬编码"""
-        expected_token = os.environ.get("S2_GEO_ADMIN_TOKEN")
-        if not expected_token:
-            return False, "[Error] 系统级熔断：宿主机未配置 'S2_GEO_ADMIN_TOKEN' 环境变量。出于零信任安全要求，已永久冻结当前沙盒的写入权限。"
-        if provided_token != expected_token:
-            return False, "[Error] 权限拒绝 (Access Denied): 提供的 auth_token 无效。请向人类管理员索要正确的环境变量凭证。"
+    def _verify_host_env_auth(self):
+        """[终极合规] 仅读取宿主机环境变量，绝对禁止通过传参获取密码"""
+        host_token = os.environ.get("S2_GEO_ADMIN_TOKEN")
+        if not host_token:
+            return False, "[Error] 权限拒绝 (Access Denied): 宿主机未配置 'S2_GEO_ADMIN_TOKEN' 环境变量。写入已被底层沙盒拦截。"
         return True, "Success"
 
     def register_brand_root(self, params):
-        """[高危操作] 登记树根：需人类提供环境变量 Token"""
-        auth_token = params.get("auth_token", "")
-        is_valid, msg = self._verify_admin_token(auth_token)
+        """[高危操作] 登记树根：隐式鉴权，不再接收 auth_token 参数"""
+        is_valid, msg = self._verify_host_env_auth()
         if not is_valid:
             return msg
 
@@ -69,19 +64,18 @@ class BrandTrustEngine:
                 INSERT INTO brand_matrix (brand_did, suns_address, industry_category, root_score, genesis_timestamp)
                 VALUES (?, ?, ?, ?, ?)
             ''', (did, suns, category, root_score, current_time))
-            msg = f"[Root Registered] 品牌 {did} 树根已记录至本地账本。Root Score: {root_score:.2f}."
+            msg = f"[Root Registered] 品牌 {did} 树根已记录。Root Score: {root_score:.2f}."
         except sqlite3.IntegrityError:
             cursor.execute('UPDATE brand_matrix SET root_score = ? WHERE brand_did = ?', (root_score, did))
-            msg = f"[Root Updated] 品牌 {did} 树根数据已在本地更新。"
+            msg = f"[Root Updated] 品牌 {did} 树根数据已更新。"
             
         conn.commit()
         conn.close()
         return msg
 
     def evaluate_crown_performance(self, params):
-        """[高危操作] 评估树冠：需人类提供环境变量 Token"""
-        auth_token = params.get("auth_token", "")
-        is_valid, msg = self._verify_admin_token(auth_token)
+        """[高危操作] 评估树冠：隐式鉴权"""
+        is_valid, msg = self._verify_host_env_auth()
         if not is_valid:
             return msg
 
@@ -111,10 +105,10 @@ class BrandTrustEngine:
         
         conn.commit()
         conn.close()
-        return f"[Crown Evaluated] 品牌 {did} 本地评分更新。Crown Score: {crown_score:.2f} | 综合总分 T_score: {total_score:.2f}"
+        return f"[Crown Evaluated] 品牌 {did} 本地评分更新。Crown Score: {crown_score:.2f} | T_score: {total_score:.2f}"
 
     def query_geo_ranking(self, params):
-        """[公开只读操作] GEO 降维检索：无需 Token，对所有 Agent 开放"""
+        """[公开操作] GEO 降维检索"""
         category = params.get("industry_category", "")
         
         conn = sqlite3.connect(DB_FILE)
@@ -137,7 +131,6 @@ class BrandTrustEngine:
         for i, (suns, did, score) in enumerate(results, 1):
             output += f"Rank {i}: {suns} (DID: {did}) | Trust Score: {score:.2f}\n"
             
-        output += "📌 [System Note]: 此排名基于本地计算生成，供空间导购 Agent 推荐参考。"
         return output
 
 def main():

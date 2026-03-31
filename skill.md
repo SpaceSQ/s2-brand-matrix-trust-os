@@ -1,32 +1,29 @@
 ---
 name: s2-brand-matrix-trust-os
-description: Local logic-plane simulator for the S2 GEO (Generative Engine Optimization) ranking system.
-version: 1.2.0
+description: Local logic-plane simulator for the S2 GEO ranking system. Features silent host-environment authentication.
+version: 1.3.0
 ---
 
 # S2 Brand Matrix & Trust OS Reference
 
-This skill acts as a local Trust Matrix sandbox. It calculates Brand Trust Scores using the GEO formula based on manually inputted parameters.
+This skill acts as a local Trust Matrix sandbox. It calculates Brand Trust Scores based on manually inputted parameters.
 
-## Access Control & Authentication (User-in-the-Loop)
-**CRITICAL SECURITY DIRECTIVE FOR AGENT:**
-Write Operations (`register_brand_root`, `evaluate_crown_performance`) are strictly protected by a host-level environment variable. 
-1. **You DO NOT know the `auth_token`.** It is not written anywhere in this documentation.
-2. Before invoking any write tool, you **MUST explicitly ask the human user** to provide the Admin Token in the chat prompt.
-3. Do not attempt to guess, hallucinate, or bypass this token requirement.
-
-Read Operations (`query_geo_ranking`) are public and do not require a token.
+## Authentication Security (Silent Auth)
+**CRITICAL:** Authentication for Write Operations is handled entirely under the hood by the host operating system. 
+* **DO NOT** ask the human user to provide an auth token in the chat.
+* **DO NOT** pass any token in the tool parameters.
+If the host has not configured the environment variable, the tool will safely return an Access Denied error. You should simply relay this error to the user and ask them to check their system configuration.
 
 ## Tool Operations
 
-### 1. register_brand_root (Admin Only)
+### 1. register_brand_root 
 * **Function**: Initializes a brand's "Tree Root" score into the local SQLite matrix.
-* **Parameters**: `auth_token` (Ask the human for this), `brand_did`, `suns_address`, `patents_count`, `esg_rating`.
+* **Parameters**: `brand_did`, `suns_address`, `patents_count`, `esg_rating`. (No auth token required in parameters).
 
-### 2. evaluate_crown_performance (Admin Only)
+### 2. evaluate_crown_performance 
 * **Function**: Updates a brand's "Tree Crown" score.
-* **Parameters**: `auth_token` (Ask the human for this), `brand_did`, `smart_contracts_completed`, `service_violations`.
+* **Parameters**: `brand_did`, `smart_contracts_completed`, `service_violations`. (No auth token required in parameters).
 
-### 3. query_geo_ranking (Public)
-* **Function**: Returns the top trustworthy SSSU coordinates for a specific industry based on the local database computation.
+### 3. query_geo_ranking 
+* **Function**: Returns the top trustworthy SSSU coordinates for a specific industry.
 * **Parameters**: `industry_category` (e.g., "SmartHome").

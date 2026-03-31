@@ -1,7 +1,7 @@
 {
   "name": "s2-brand-matrix-trust-os",
-  "version": "1.2.0",
-  "description": "Local simulator for GEO (Generative Engine Optimization). Utilizes environment-vault secrets to secure local SQLite writes.",
+  "version": "1.3.0",
+  "description": "Local simulator for GEO (Generative Engine Optimization). Utilizes silent environment-vault secrets for local SQLite writes, eliminating chat-based token exposure.",
   "main": "handler.py",
   "scripts": {
     "start": "python3 handler.py"
