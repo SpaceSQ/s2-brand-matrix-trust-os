@@ -1,6 +1,6 @@
 # 变更日志 (Changelog) - S2 Brand Matrix & Trust OS
 
-## [1.1.0] - 2026-04-01
+## [1.1.0] - 2026-03-31
 ### 🛡️ Zero-Trust Governance & Security Upgrade
 - **Implemented Write Authentication**: Addressed major security vulnerability where any agent could manipulate the trust ledger. `register_brand_root` and `evaluate_crown_performance` now strictly require a predefined `auth_token` in the parameters.
 - **Resolved Capability Mismatch**: Clarified in `README.md` and `skill.md` that the plugin acts as a Local Logic-Plane Simulator. Removed misleading claims of autonomous cross-database/blockchain reading. External agents must securely supply the numeric metrics for computation.
